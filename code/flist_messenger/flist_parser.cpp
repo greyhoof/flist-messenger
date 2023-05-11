@@ -20,6 +20,7 @@
  */
 
 #include "flist_parser.h"
+#include "flist_global.h"
 #include <QUrl>
 
 /**
@@ -33,6 +34,7 @@ BBCodeParser::BBCodeTag* BBCodeParser::BBCODE_UNDERLINE = new BBCodeParser::Wrap
 BBCodeParser::BBCodeTag* BBCodeParser::BBCODE_SUPERSCRIPT = new BBCodeParser::WrapperBBCodeTag("<sup>", "</sup>", true);
 BBCodeParser::BBCodeTag* BBCodeParser::BBCODE_SUBSCRIPT = new BBCodeParser::WrapperBBCodeTag("<sub>", "</sub>", true);
 BBCodeParser::BBCodeTag* BBCodeParser::BBCODE_STRIKETHROUGH = new BBCodeParser::WrapperBBCodeTag("<s>", "</s>", true);
+BBCodeParser::BBCodeTag* BBCodeParser::BBCODE_SPOILER = new BBCodeParser::BBCodeTagSpoiler(true);
 BBCodeParser::BBCodeTag* BBCodeParser::BBCODE_COLOR = new BBCodeParser::BBCodeTagColor(true);
 BBCodeParser::BBCodeTag* BBCodeParser::BBCODE_URL = new BBCodeParser::BBCodeTagURL(false);
 BBCodeParser::BBCodeTag* BBCodeParser::BBCODE_CHANNEL = new BBCodeParser::BBCodeTagChannel(true);
@@ -62,6 +64,7 @@ BBCodeParser::BBCodeParser() {
     addTag("eicon", BBCODE_EICON);
     addTag("user", BBCODE_USER);
     addTag("noparse", BBCODE_NOPARSE);
+    addTag("spoiler", BBCODE_SPOILER);
 }
 
 void BBCodeParser::BBCodeTag::setTagList(QSet<QString>& tagList) {
@@ -144,6 +147,15 @@ QString BBCodeParser::BBCodeTagUser::parse(QString& param, QString& content) {
     static QRegularExpression bbTagUser("[A-Za-z0-9 \\-_]+", QRegularExpression::CaseInsensitiveOption);
     if (content.indexOf(bbTagUser) >= 0) {
         return "<a href=\"https://www.f-list.net/c/" + content + "\"><img src=\":/images/user.png\" />" + content + "</a>";
+    }
+    return content;
+}
+
+QString BBCodeParser::BBCodeTagSpoiler::parse(QString& param, QString& content) {
+    (void)param;
+    static QRegularExpression bbTagSpoiler("[A-Za-z0-9 \\-_]+", QRegularExpression::CaseInsensitiveOption);
+    if (content.indexOf(bbTagSpoiler) >= 0) {
+        return "<span alt=\"Select to display spoiler.\" style=\"background-color:black;color:black;\">" + content + "</span>";
     }
     return content;
 }
@@ -383,4 +395,27 @@ void BBCodeParser::escapeAppend(QString& input, int start, int end, QString& out
     */
     output.append(input.mid(start, end - start));
     //}
+}
+
+QString BBCodeParser::randomID(QString prefix, int lengthOfRandomness) {
+    QString source = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    // str.prepend(prefix + "-");
+
+    QString result;
+
+    for (int i = 0; i < lengthOfRandomness; i++) {
+        int value = QRandomGenerator::global()->bounded(0, source.length());
+        if (value < source.length()) {
+            QChar chr = source.at(value);
+            result.append(chr);
+            continue;
+        }
+        debugMessage("BBCodeParser::randomID() -> Generated number that is out of bounds. Oops.");
+    }
+
+    if (prefix.length() > 0) {
+        result.prepend(prefix + "-");
+    }
+
+    return result;
 }

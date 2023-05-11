@@ -28,6 +28,7 @@
 #include <QSet>
 #include <QStack>
 #include <QString>
+#include <QRandomGenerator>
 
 /**
  * This code is based off of the BBCode parser written in java by Telroth
@@ -130,6 +131,14 @@ class BBCodeParser {
                 QString parse(QString& param, QString& content);
         };
 
+        class BBCodeTagSpoiler : public BBCodeTag {
+            public:
+                BBCodeTagSpoiler(bool blacklist) : BBCodeTag(blacklist) {}
+
+                QString parse(QString& param, QString& content);
+        };
+
+        static QString randomID(QString prefix = "", int lengthOfRandomness = 7);
         void addTag(QString tag, BBCodeTag* code);
         void addSmiley(QString tag, QString code);
         QString parse(QString& input);
@@ -151,6 +160,7 @@ class BBCodeParser {
         static BBCodeTag* BBCODE_EICON;
         static BBCodeTag* BBCODE_USER;
         static BBCodeTag* BBCODE_NOPARSE;
+        static BBCodeTag* BBCODE_SPOILER;
 
     private:
         Tag* getTag(QString& name, QString& param);
