@@ -72,7 +72,6 @@
 
 #include <QUrl>
 #include <QtNetwork>
-#include <QTcpSocket>
 
 #include "flist_character.h"
 #include "flist_channelpanel.h"

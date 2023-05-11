@@ -7,9 +7,7 @@ If you have any questions about *this fork specifically*, feel free to contact G
 
 If you have questions about *the original version of this project*, please refer to the readme of the original repo: https://github.com/Dhwty/flist-messenger
 
------
-Please do not bother the original devs of this project with questions about this fork, as they are not involved with it.
------
+**Please do not bother the original devs of this project with questions about this fork, as they are not involved with it.**
 
 -----
 
@@ -20,6 +18,7 @@ Please do not bother the original devs of this project with questions about this
 * libjson was removed in favor of Qt's built-in JSON support
 * WebSocket connections are now properly handled by QWebSocket
 * Icons and EIcons are now fully supported (including animation of the latter)
+* Spoiler tags are now supported (select text to display, as :hover is not supported)
 
 **Changes between 0.8.5 and 0.9.1:**
 * Internally flist-messenger has undergone a very heavy overhaul to improve code quality. While a great deal of effort has been spent trying to keep behaviour bug free and working, it's possible that unintended bugs have crept in.
