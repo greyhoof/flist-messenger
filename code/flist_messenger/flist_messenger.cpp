@@ -1807,6 +1807,9 @@ void flist_messenger::parseInput() {
         } else if (slashcommand == "/gunban") {
             session->unbanFromChat(inputText.mid(8).simplified());
             success = true;
+        } else if (slashcommand == "/uptime") {
+            session->requestServerUptime();
+            success = true;
         } else if (slashcommand == "/createchannel") {
             createPublicChannel(inputText.mid(15));
         } else if (slashcommand == "/killchannel") {
@@ -2420,6 +2423,7 @@ void flist_messenger::messageMessage(FMessage message) {
                 break;
             case MESSAGE_TYPE_KICK:
             case MESSAGE_TYPE_KICKBAN:
+            case MESSAGE_TYPE_TIMEOUT:
                 break;
             case MESSAGE_TYPE_IGNORE_UPDATE:
                 break;
@@ -2474,6 +2478,7 @@ void flist_messenger::messageMessage(FMessage message) {
             break;
         case MESSAGE_TYPE_KICK:
         case MESSAGE_TYPE_KICKBAN:
+        case MESSAGE_TYPE_TIMEOUT:
             break;
         case MESSAGE_TYPE_IGNORE_UPDATE:
             break;
@@ -2546,6 +2551,7 @@ void flist_messenger::messageMany(QList<QString> &panelnames, QString message, M
                 break;
             case MESSAGE_TYPE_KICK:
             case MESSAGE_TYPE_KICKBAN:
+            case MESSAGE_TYPE_TIMEOUT:
                 break;
             case MESSAGE_TYPE_IGNORE_UPDATE:
                 break;
@@ -2587,6 +2593,7 @@ void flist_messenger::messageMany(QList<QString> &panelnames, QString message, M
                 break;
             case MESSAGE_TYPE_KICK:
             case MESSAGE_TYPE_KICKBAN:
+            case MESSAGE_TYPE_TIMEOUT:
                 break;
             case MESSAGE_TYPE_IGNORE_UPDATE:
                 break;

@@ -103,6 +103,7 @@ class FSession : public QObject {
         void rollDicePM(QString recipient, QString dice);
         void requestChannels();
         void requestProfileKinks(QString character);
+        void requestServerUptime();
 
     signals:
         void socketErrorSignal(QString error);
@@ -157,6 +158,7 @@ class FSession : public QObject {
 
         COMMAND(CDS);
         COMMAND(CIU);
+        COMMAND(CSO);
         COMMAND(ICH);
         COMMAND(JCH);
         COMMAND(LCH);
@@ -174,6 +176,7 @@ class FSession : public QObject {
         COMMAND(COL);
         COMMAND(COA);
         COMMAND(COR);
+        COMMAND(CTU);
 
         COMMAND(BRO);
         COMMAND(SYS);
@@ -185,6 +188,8 @@ class FSession : public QObject {
 
         COMMAND(FRL);
         COMMAND(IGN);
+
+        COMMAND(UPT);
 
         QString makeMessage(QString message, QString charactername, FCharacter *character, FChannel *channel = 0, QString prefix = "", QString postfix = "");
         COMMAND(LRP);
