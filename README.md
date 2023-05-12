@@ -50,7 +50,7 @@ Compiling from Source
 For the original source, visit the Github repository here:
   https://github.com/Dhwty/flist-messenger
 
-Compiling flist-messenger requires Qt6. The easiest way to get this on Windows or Mac is to download Qt6 from http://qt-project.org/downloads . For GNU/Linux systems, installing Qt Creator from your distro's package manager should be easiest.
+Compiling flist-messenger requires Qt6. The easiest way to get this on Windows or Mac is to download Qt6 from https://www.qt.io/download-open-source (You will be asked to create a free account.) - For GNU/Linux systems, installing Qt Creator from your distro's package manager should be easiest.
 
 With Qt Creator installed you should be able to run it and open 'flist_messenger.pro'. Setting up and compiling the project should be straight forward from there.
 
