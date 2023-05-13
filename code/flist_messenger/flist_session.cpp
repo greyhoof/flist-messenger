@@ -227,6 +227,7 @@ void FSession::wsRecv(std::string packet) {
 
         CMD(CDS); // Channel description.
         CMD(CIU); // Channel invite.
+        CMD(CSO); // Set channel owner.
         CMD(ICH); // Initial channel data.
         CMD(JCH); // Join channel.
         CMD(LCH); // Leave channel.
@@ -239,6 +240,7 @@ void FSession::wsRecv(std::string packet) {
 
         CMD(CBU); // kick and ban character from channel.
         CMD(CKU); // Kick character from channel.
+        CMD(CTU); // Time out character from channel.
 
         CMD(COL); // Channel operator list.
         CMD(COA); // Channel operator add.
@@ -269,6 +271,8 @@ void FSession::wsRecv(std::string packet) {
         CMD(ORS); // Open room list.
 
         CMD(RTB); // Real time bridge.
+
+        CMD(UPT); // Server uptime info.
 
         CMD(ZZZ); // Debug test command.
 
@@ -410,6 +414,17 @@ COMMAND(CIU) {
     QString message = makeMessage(QString("/me has invited you to [session=%1]%2[/session].*").arg(channeltitle).arg(channelname), charactername, character, 0,
                                   "<font color=\"yellow\"><b>Channel invite:</b></font> ", "");
     account->ui->messageSystem(this, message, MESSAGE_TYPE_CHANNEL_INVITE);
+}
+
+COMMAND(CSO) {
+    // Set Channel Owner.
+    // CSO {"character":"Character Name","channel":"Channel Name"}
+    QString channelname = nodes.value("channel").toString();
+    if (channelname.isEmpty()) {
+        debugMessage(QString("Received information that channel ops were changed for a channel but the channel name was empty. %1").arg(QString::fromStdString(rawpacket)));
+        return;
+    }
+    requestChanopList(channelname);
 }
 
 COMMAND(ICH) {
@@ -690,6 +705,45 @@ COMMAND(CBUCKU) {
     }
 }
 
+COMMAND(CTU) {
+    // Character gets timed out.
+    FChannel *channel;
+    QString channelname = nodes.value("channel").toString();
+    QString charactername = nodes.value("character").toString();
+    QString operatorname = nodes.value("operator").toString();
+    int length = nodes.value("length").toInt();
+    QString kicktype = "timed out";
+    channel = getChannel(channelname);
+    if (!channel) {
+        debugMessage(QString("[SERVER BUG] Was told about character '%1' being %4 from channel '%2' by '%3', but the channel '%2' is unknown (or never joined).  %5")
+                             .arg(charactername, channelname, operatorname, kicktype, QString::fromStdString(rawpacket)));
+        return;
+    }
+    if (!channel->isJoined()) {
+        debugMessage(QString("[SERVER BUG] Was told about character '%1' being %4 from channel '%2' by '%3', but this session is no longer joined with channel '%2'.  %5")
+                             .arg(charactername, channelname, operatorname, kicktype, QString::fromStdString(rawpacket)));
+        return;
+    }
+    if (!channel->isCharacterPresent(charactername)) {
+        debugMessage(QString("[SERVER BUG] Was told about character '%1' being %4 from channel '%2' by '%3', but '%1' is not present in the channel.  %5")
+                             .arg(charactername, channelname, operatorname, kicktype, QString::fromStdString(rawpacket)));
+        return;
+    }
+    if (!channel->isCharacterOperator(operatorname) && !isCharacterOperator(operatorname)) {
+        debugMessage(QString("[SERVER BUG] Was told about character '%1' being %4 from channel '%2' by '%3', but '%3' is not a channel operator or a server operator!  %5")
+                             .arg(charactername, channelname, operatorname, kicktype, kicktype, QString::fromStdString(rawpacket)));
+    }
+    QString message = QString("<b>%1</b> has %2 <b>%3</b> from %4 for %5 seconds.").arg(operatorname, kicktype, charactername, channel->getTitle(), QString::number(length));
+    if (charactername == character) {
+        account->ui->messageChannel(this, channelname, message, MESSAGE_TYPE_TIMEOUT, true, true);
+        channel->removeCharacter(charactername);
+        channel->leave();
+    } else {
+        account->ui->messageChannel(this, channelname, message, MESSAGE_TYPE_TIMEOUT, channel->isCharacterOperator(character), false);
+        channel->removeCharacter(charactername);
+    }
+}
+
 COMMAND(CBU) {
     // Kick and ban character from channel.
     // CBU {"operator": "Character Name", "channel": "Channel Name", "character": "Character Name"}
@@ -802,6 +856,8 @@ COMMAND(IDN) {
         debugMessage(
                 QString("[SERVER BUG] Received IDN response for '%1', but this session is for '%2'. %3").arg(charactername).arg(character).arg(QString::fromStdString(rawpacket)));
     }
+
+    requestServerUptime();
 }
 
 COMMAND(VAR) {
@@ -1082,6 +1138,33 @@ COMMAND(TPN) {
         status = TYPING_STATUS_CLEAR;
     }
     account->ui->setCharacterTypingStatus(this, charactername, status);
+}
+
+COMMAND(UPT) {
+    (void)rawpacket;
+    // Server uptime
+    // UPT { "time": int, "starttime": int, "startstring": string, "accepted": int, "channels": int, "users": int, "maxusers": int }
+    // UPT { "time": 1359398530, "starttime": 1353393109, "startstring": "Tue, 20 Nov 2012 06:31:49 +0000", "accepted": 1665213, "channels": 694, "users": 2105, "maxusers": 2946 }
+    qint64 serverTime = nodes.value("time").toInt();
+    qint64 serverStartedAt = nodes.value("starttime").toInt();
+    // QString serverRunningSince = nodes.value("startstring").toString();
+    int connections = nodes.value("accepted").toInt();
+    int channels = nodes.value("channels").toInt();
+    int users = nodes.value("users").toInt();
+    int maxusers = nodes.value("maxusers").toInt();
+
+    QDateTime dateServerTime = QDateTime::fromSecsSinceEpoch(serverTime);
+    QString serverTimeString = dateServerTime.toString("yyyy-MM-dd HH:mm:ss");
+
+    QDateTime dateServerStartedTime = QDateTime::fromSecsSinceEpoch(serverStartedAt);
+    QString serverStartedTimeString = dateServerStartedTime.toString("yyyy-MM-dd HH:mm:ss");
+
+    account->ui->messageSystem(
+            this,
+            QString("<b>Server info:</b> Server time is: %1 - Server was started at: %2 - It accepted a total of %3 connections. - Currently, there are %4 "
+                    "users online in %5 channels. The most amount of users was %6 !")
+                    .arg(serverTimeString, serverStartedTimeString, QString::number(connections), QString::number(users), QString::number(channels), QString::number(maxusers)),
+            MESSAGE_TYPE_SYSTEM);
 }
 
 COMMAND(KID) {
@@ -1538,6 +1621,18 @@ void FSession::sendDebugCommand(QString payload) {
     wsSend("ZZZ", node);
 }
 
+void FSession::timeoutFromChannel(QString channel, QString character, int minutes) {
+    FJsonHelper helper;
+    QMap<QString, QString> valueMap;
+
+    valueMap.insert("channel", channel);
+    valueMap.insert("character", character);
+    valueMap.insert("length", QString::number(minutes));
+    QJsonDocument nodes = helper.generateJsonNodesFromMap(valueMap);
+
+    wsSend("CTU", nodes);
+}
+
 void FSession::kickFromChannel(QString channel, QString character) {
     FJsonHelper helper;
     QMap<QString, QString> valueMap;
@@ -1762,4 +1857,8 @@ void FSession::requestProfileKinks(QString character) {
 
     wsSend("PRO", node);
     wsSend("KIN", node);
+}
+
+void FSession::requestServerUptime() {
+    wsSend("UPT");
 }

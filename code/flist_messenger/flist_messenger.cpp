@@ -1708,6 +1708,20 @@ void flist_messenger::parseInput() {
         } else if (slashcommand == "/ban") {
             session->banFromChannel(currentPanel->getChannelName(), inputText.mid(5).simplified());
             success = true;
+        } else if (slashcommand == "/timeout") {
+            // CTU { "channel":string, "character":string, "length":num }
+            QStringList tparts = inputText.mid(9).split(',');
+            bool isInt;
+            int time = tparts[1].simplified().toInt(&isInt);
+
+            if (isInt == false) {
+                QString err = "Time is not a number.";
+                messageSystem(session, err, MESSAGE_TYPE_FEEDBACK);
+            } else {
+                QString who(tparts[0].simplified());
+                session->timeoutFromChannel(currentPanel->getChannelName(), who, time);
+                success = true;
+            }
         } else if (slashcommand == "/accountban") {
             session->banFromChat(inputText.mid(12).simplified());
             success = true;
@@ -1806,6 +1820,9 @@ void flist_messenger::parseInput() {
             }
         } else if (slashcommand == "/gunban") {
             session->unbanFromChat(inputText.mid(8).simplified());
+            success = true;
+        } else if (slashcommand == "/uptime") {
+            session->requestServerUptime();
             success = true;
         } else if (slashcommand == "/createchannel") {
             createPublicChannel(inputText.mid(15));
@@ -2420,6 +2437,7 @@ void flist_messenger::messageMessage(FMessage message) {
                 break;
             case MESSAGE_TYPE_KICK:
             case MESSAGE_TYPE_KICKBAN:
+            case MESSAGE_TYPE_TIMEOUT:
                 break;
             case MESSAGE_TYPE_IGNORE_UPDATE:
                 break;
@@ -2474,6 +2492,7 @@ void flist_messenger::messageMessage(FMessage message) {
             break;
         case MESSAGE_TYPE_KICK:
         case MESSAGE_TYPE_KICKBAN:
+        case MESSAGE_TYPE_TIMEOUT:
             break;
         case MESSAGE_TYPE_IGNORE_UPDATE:
             break;
@@ -2546,6 +2565,7 @@ void flist_messenger::messageMany(QList<QString> &panelnames, QString message, M
                 break;
             case MESSAGE_TYPE_KICK:
             case MESSAGE_TYPE_KICKBAN:
+            case MESSAGE_TYPE_TIMEOUT:
                 break;
             case MESSAGE_TYPE_IGNORE_UPDATE:
                 break;
@@ -2587,6 +2607,7 @@ void flist_messenger::messageMany(QList<QString> &panelnames, QString message, M
                 break;
             case MESSAGE_TYPE_KICK:
             case MESSAGE_TYPE_KICKBAN:
+            case MESSAGE_TYPE_TIMEOUT:
                 break;
             case MESSAGE_TYPE_IGNORE_UPDATE:
                 break;
