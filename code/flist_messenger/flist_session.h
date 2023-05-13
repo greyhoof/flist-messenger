@@ -78,6 +78,7 @@ class FSession : public QObject {
         void sendTypingNotification(QString character, TypingStatus status);
         void sendDebugCommand(QString payload);
 
+        void timeoutFromChannel(QString channel, QString character, int minutes);
         void kickFromChannel(QString channel, QString character);
         void kickFromChat(QString character);
         void banFromChannel(QString channel, QString character);

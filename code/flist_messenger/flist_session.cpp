@@ -1621,6 +1621,18 @@ void FSession::sendDebugCommand(QString payload) {
     wsSend("ZZZ", node);
 }
 
+void FSession::timeoutFromChannel(QString channel, QString character, int minutes) {
+    FJsonHelper helper;
+    QMap<QString, QString> valueMap;
+
+    valueMap.insert("channel", channel);
+    valueMap.insert("character", character);
+    valueMap.insert("length", QString::number(minutes));
+    QJsonDocument nodes = helper.generateJsonNodesFromMap(valueMap);
+
+    wsSend("CTU", nodes);
+}
+
 void FSession::kickFromChannel(QString channel, QString character) {
     FJsonHelper helper;
     QMap<QString, QString> valueMap;
