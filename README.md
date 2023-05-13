@@ -12,13 +12,16 @@ If you have questions about *the original version of this project*, please refer
 -----
 
 
-**Changes between 0.9.1 and 0.9.5:**
+**Changes between 0.9.1 and 0.9.6:**
 * flist-messenger was migrated to Qt 6.5
 * Handling of stylesheets was improved, the app will now provide default files if none exist in the app folder
 * libjson was removed in favor of Qt's built-in JSON support
 * WebSocket connections are now properly handled by QWebSocket
 * Icons and EIcons are now fully supported (including animation of the latter)
 * Spoiler tags are now supported (select text to display, as :hover is not supported)
+* Channel timeout command, uptime command and their respective respones are now supported
+* Server response to channel owner change is now supported
+* Logging was restructured (WIP)
 
 **Changes between 0.8.5 and 0.9.1:**
 * Internally flist-messenger has undergone a very heavy overhaul to improve code quality. While a great deal of effort has been spent trying to keep behaviour bug free and working, it's possible that unintended bugs have crept in.

@@ -30,6 +30,7 @@
 #include "flist_character.h"
 #include "flist_parser.h"
 #include "flist_enums.h"
+#include "flist_message.h"
 
 #include <iostream>
 #include <QScreen>
@@ -147,16 +148,16 @@ class FChannelPanel {
         bool getAlwaysPing() { return alwaysPing; }
 
         QJsonDocument* toJSON();
-        QString* toString();
+        QString toString();
 
         QStringList& getKeywordList() { return keywordlist; }
 
         void loadSettings();
 
-        void addLine(QString chanLine, bool log);
+        void addLine(FMessage message, bool log);
         void clearLines();
         void emptyCharList();
-        void logLine(QString& chanLine);
+        void logLine(QString chanLine);
         void printChannel(QTextBrowser* textEdit);
         QPushButton* pushButton;
         static BBCodeParser* bbparser;

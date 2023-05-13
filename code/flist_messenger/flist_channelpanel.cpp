@@ -210,14 +210,28 @@ void FChannelPanel::removeOp(QString& charactername) {
     chanOps.remove(charactername.toLower());
 }
 
-void FChannelPanel::addLine(QString chanLine, bool log) {
-    chanLines.append(chanLine);
+void FChannelPanel::addLine(FMessage message, bool log) {
+    // this is not the cleanest solution but it should do for now
+    if (!message.getForcedMessage().isEmpty()) {
+        chanLines.append(message.getForcedMessage());
+    } else {
+        chanLines.append(message.getFormattedMessage(true));
+    }
+
+    // debugMessage(QString("FChannelPanel::addLine() -> Received message..."));
+    // debugMessage(QString("FChannelPanel::addLine() -> Original: %1").arg(message.getMessage()));
+    // debugMessage(QString("FChannelPanel::addLine() -> Formatted: %1").arg(message.getFormattedMessage()));
+    // debugMessage(QString("FChannelPanel::addLine() -> Plain Text: %1").arg(message.getPlainTextMessage()));
+    // debugMessage(QString("FChannelPanel::addLine() -> Forced: %1").arg(message.getForcedMessage()));
+    // debugMessage(QString("FChannelPanel::addLine() -> Should log?: %1").arg(log ? "true" : "false"));
+    // debugMessage(QString("FChannelPanel::addLine() -> Should log according to message?: %1").arg(message.getShouldLogToDisk() ? "true" : "false"));
+
     // todo: make this configurable
     while (chanLines.count() > 256) {
         chanLines.pop_front();
     }
-    if (log) {
-        logLine(chanLine);
+    if (log && message.getShouldLogToDisk()) {
+        logLine(message.getMessage());
     }
 }
 
@@ -225,7 +239,7 @@ void FChannelPanel::clearLines() {
     chanLines.clear();
 }
 
-void FChannelPanel::logLine(QString& chanLine) {
+void FChannelPanel::logLine(QString chanLine) {
     QString logName, dirName;
 
     FSession* session = ui->getSession(sessionid);
@@ -277,6 +291,7 @@ void FChannelPanel::logLine(QString& chanLine) {
                         + logName);
         qApp->exit(1);
     }
+
     chanLine.append("<br />\n");
     logfile.write(chanLine.toUtf8());
     logfile.close();
@@ -362,36 +377,36 @@ QJsonDocument* FChannelPanel::toJSON() {
     return result;
 }
 
-QString* FChannelPanel::toString() {
-    QString* rv = new QString("Channel: ");
-    *rv += chanTitle;
-    *rv += "\nName: ";
-    *rv += chanName;
-    *rv += "\nType: ";
+QString FChannelPanel::toString() {
+    QString rv = QString("Channel: ");
+    rv += chanTitle;
+    rv += "\nName: ";
+    rv += chanName;
+    rv += "\nType: ";
     if (chanType == FChannel::CHANTYPE_NORMAL)
-        *rv += "Normal";
+        rv += "Normal";
     else if (chanType == FChannel::CHANTYPE_PM) {
-        *rv += "PM to: ";
-        *rv += recipientName;
+        rv += "PM to: ";
+        rv += recipientName;
     } else if (chanType == FChannel::CHANTYPE_ADHOC)
-        *rv += "Adhoc";
+        rv += "Adhoc";
     else if (chanType == FChannel::CHANTYPE_CONSOLE)
-        *rv += "CONSOLE";
+        rv += "CONSOLE";
     else
-        *rv += "INVALID TYPE";
-    *rv += "\nLines: ";
-    *rv += QString::number(chanLines.count());
-    *rv += "\nActive: ";
-    *rv += active ? "Yes" : "No";
-    *rv += "\nMode: ";
+        rv += "INVALID TYPE";
+    rv += "\nLines: ";
+    rv += QString::number(chanLines.count());
+    rv += "\nActive: ";
+    rv += active ? "Yes" : "No";
+    rv += "\nMode: ";
     if (mode == CHANNEL_MODE_CHAT)
-        *rv += "Chat";
+        rv += "Chat";
     else if (mode == CHANNEL_MODE_ADS)
-        *rv += "Ads";
+        rv += "Ads";
     else if (mode == CHANNEL_MODE_BOTH)
-        *rv += "Both";
+        rv += "Both";
     else
-        *rv += "INVALID MODE";
+        rv += "INVALID MODE";
     return rv;
 }
 

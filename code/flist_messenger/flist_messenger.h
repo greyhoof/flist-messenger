@@ -145,17 +145,17 @@ class flist_messenger : public QMainWindow, iUserInterface {
         virtual void notifyCharacterProfileDataUpdated(FSession *session, QString charactername);
 
         virtual void messageMessage(FMessage message);
-        virtual void messageMany(FSession *session, QList<QString> &channels, QList<QString> &characters, bool system, QString message, MessageType messagetype);
-        virtual void messageAll(FSession *session, QString message, MessageType messagetype);
-        virtual void messageChannel(FSession *session, QString channelname, QString message, MessageType messagetype, bool console = false, bool notify = false);
-        virtual void messageCharacter(FSession *session, QString charactername, QString message, MessageType messagetype);
-        virtual void messageSystem(FSession *session, QString message, MessageType messagetype);
+        virtual void messageMany(FSession *session, QList<QString> &channels, QList<QString> &characters, bool system, FMessage message);
+        virtual void messageAll(FSession *session, FMessage message);
+        virtual void messageChannel(FSession *session, QString channelname, FMessage message, bool console = false, bool notify = false);
+        virtual void messageCharacter(FSession *session, QString charactername, FMessage message);
+        virtual void messageSystem(FSession *session, FMessage message);
 
         virtual void updateKnownChannelList(FSession *session);
         virtual void updateKnownOpenRoomList(FSession *session);
 
     private:
-        void messageMany(QList<QString> &panelnames, QString message, MessageType messagetype);
+        void messageMany(QList<QString> &panelnames, FMessage message);
         bool getChannelBool(QString key, FChannelPanel *channelpanel, bool dflt);
         bool needsAttention(QString key, FChannelPanel *channelpanel, AttentionMode dflt);
 

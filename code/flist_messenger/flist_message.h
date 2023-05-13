@@ -9,43 +9,52 @@
 
 class FMessageData;
 
-class FMessage
-{
-public:
-	FMessage();
-	FMessage(QString message, MessageType messagetype);
-	FMessage(const FMessage &);
-	FMessage &operator=(const FMessage &);
-	~FMessage();
+class FMessage {
+    public:
+        FMessage();
+        FMessage(QString message, MessageType messagetype, bool log = true);
+        FMessage(const FMessage &);
+        FMessage &operator=(const FMessage &);
+        ~FMessage();
 
+        FMessage &toUser(bool notify = true, bool console = true);
+        FMessage &toBroadcast(bool broadcast = true);
 
-	FMessage &toUser(bool notify = true, bool console = true);
-	FMessage &toBroadcast(bool broadcast = true);
+        FMessage &toChannel(QString channelname);
+        FMessage &toCharacter(QString charactername);
 
-	FMessage &toChannel(QString channelname);
-	FMessage &toCharacter(QString charactername);
+        FMessage &fromSession(QString sessionid);
+        FMessage &fromChannel(QString channelname);
+        FMessage &fromCharacter(QString charactername);
 
-	FMessage &fromSession(QString sessionid);
-	FMessage &fromChannel(QString channelname);
-	FMessage &fromCharacter(QString charactername);
+        QString getPlainTextMessage();
+        QString getFormattedMessage(bool addTimestamp = true);
+        QString getMessage();
 
-	QString getPlainTextMessage();
-	QString getFormattedMessage();
-	QString getMessage();
-	MessageType getMessageType();
-	bool getConsole();
-	bool getNotify();
-	bool getBroadcast();
-	QStringList &getDestinationChannelList();
-	QStringList &getDestinationCharacterList();
-	QString getSessionID();
-	QString getSourceChannel();
-	QString getSourceCharacter();
+        QString getForcedMessage();
 
-	QDateTime getTimeStamp();
+        void setForcedMessage(QString _val);
 
-private:
-	QExplicitlySharedDataPointer<FMessageData> data;
+        MessageType getMessageType();
+        bool getConsole();
+        bool getNotify();
+        bool getBroadcast();
+
+        bool getShouldLogToDisk() { return shouldLogToDisk; };
+
+        QStringList &getDestinationChannelList();
+        QStringList &getDestinationCharacterList();
+        QString getSessionID();
+        QString getSourceChannel();
+        QString getSourceCharacter();
+
+        QDateTime getTimeStamp();
+
+        void setShouldLogToDisk(bool _newVal) { shouldLogToDisk = _newVal; }
+
+    private:
+        QExplicitlySharedDataPointer<FMessageData> data;
+        bool shouldLogToDisk = true;
 };
 
 #endif // FLIST_MESSAGE_H

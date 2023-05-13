@@ -12,9 +12,7 @@ DEFINES += GIT_HASH=\"$${GITHASHSTR}\"
 CONFIG += qt resources warn_on
 CONFIG -= console
 
-QT += core gui network
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia websockets
+QT += core gui network widgets multimedia websockets xml
 
 #QMAKE_CXXFLAGS_DEBUG += -Werror
 

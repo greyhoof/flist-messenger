@@ -193,6 +193,7 @@ class FSession : public QObject {
         COMMAND(UPT);
 
         QString makeMessage(QString message, QString charactername, FCharacter *character, FChannel *channel = 0, QString prefix = "", QString postfix = "");
+        QString makeBBMessage(QString message, QString charactername, FCharacter *character, FChannel *channel = 0, QString prefix = "", QString postfix = "");
         COMMAND(LRP);
         COMMAND(MSG);
         COMMAND(PRI);

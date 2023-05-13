@@ -27,119 +27,118 @@
 #include <QIcon>
 #include <time.h>
 
-class FCharacter
-{
+class FCharacter {
+    public:
+        enum characterStatus { STATUS_ONLINE, STATUS_LOOKING, STATUS_BUSY, STATUS_DND, STATUS_CROWN, STATUS_AWAY, STATUS_MAX };
 
-public:
-	enum characterStatus
-	{
-		STATUS_ONLINE,
-		STATUS_LOOKING,
-		STATUS_BUSY,
-		STATUS_DND,
-		STATUS_CROWN,
-		STATUS_AWAY,
-		STATUS_MAX
-	};
+        enum characterGender {
+            GENDER_NONE,
+            GENDER_MALE,
+            GENDER_FEMALE,
+            GENDER_TRANSGENDER,
+            GENDER_SHEMALE,
+            GENDER_HERM,
+            GENDER_MALEHERM,
+            GENDER_CUNTBOY,
+            GENDER_OFFLINE_UNKNOWN,
+            GENDER_MAX
+        };
 
-	enum characterGender
-	{
-		GENDER_NONE,
-		GENDER_MALE,
-		GENDER_FEMALE,
-		GENDER_TRANSGENDER,
-		GENDER_SHEMALE,
-		GENDER_HERM,
-		GENDER_MALEHERM,
-		GENDER_CUNTBOY,
-		GENDER_OFFLINE_UNKNOWN,
-		GENDER_MAX
-	};
-	static QIcon*		statusIcons[STATUS_MAX];
-	static QString		statusStrings[STATUS_MAX];
-	static QString		genderStrings[GENDER_MAX];
-	static QColor		genderColors[GENDER_MAX];
-	FCharacter();
-	FCharacter ( QString& name, bool friended );
-	~FCharacter() {}
+        static QIcon* statusIcons[STATUS_MAX];
+        static QString statusStrings[STATUS_MAX];
+        static QString genderStrings[GENDER_MAX];
+        static QColor genderColors[GENDER_MAX];
+        static QString genderBBColors[GENDER_MAX];
+        FCharacter();
+        FCharacter(QString& name, bool friended);
 
-	void setName ( QString& name );
-	QString& name()
-	{
-		return charName;
-	}
+        ~FCharacter() {}
 
-	void setStatus ( QString& status );
-	characterStatus status()
-	{
-		return charStatus;
-	}
+        void setName(QString& name);
 
-	QString& statusString();
-	void setStatusMsg ( QString& status );
-	QIcon* statusIcon();
-	QString& statusMsg()
-	{
-		return statusMessage;
-	}
+        QString& name() { return charName; }
 
-	void setGender ( QString& gender );
-	characterGender gender()
-	{
-		return charGender;
-	}
+        void setStatus(QString& status);
 
-	QString& genderString();
-	void updateActivityTimer();
-	quint32 activityTimer()
-	{
-		return lastActivity;
-	}
+        characterStatus status() { return charStatus; }
 
-	QString activityString();
-	bool isChatOp()
-	{
-		return chatOp;
-	}
-	void setIsFriend(bool b) { isFriend = b; }
-	bool getFriend()
-	{
-		return isFriend;
-	}
+        QString& statusString();
+        void setStatusMsg(QString& status);
+        QIcon* statusIcon();
 
-	void setIsChatOp ( const bool op );
-	QColor& genderColor();
-	QString PMTitle();
+        QString& statusMsg() { return statusMessage; }
 
-	QString getUrl() {return "https://www.f-list.net/c/" + charName + "/";} //todo: HTTP request character encoding. //todo: Get server address from FServer?
+        void setGender(QString& gender);
 
-	void clearCustomKinkData() {customkinkdatakeys.clear(); customkinkdata.clear();}
-	void addCustomKinkData(QString key, QString value) {customkinkdatakeys.removeAll(key); customkinkdatakeys.append(key); customkinkdata[key] = value;}
-	QStringList &getCustomKinkDataKeys() {return customkinkdatakeys;}
-	QHash<QString, QString> &getCustomKinkData() {return customkinkdata;}
+        characterGender gender() { return charGender; }
 
-	void clearProfileData() {profiledatakeys.clear(); profiledata.clear();}
-	void addProfileData(QString key, QString value) {profiledatakeys.removeAll(key); profiledatakeys.append(key); profiledata[key] = value;}
-	QStringList &getProfileDataKeys() {return profiledatakeys;}
-	QHash<QString, QString> &getProfileData() {return profiledata;}
-	
+        QString& genderString();
+        void updateActivityTimer();
 
-	static void initClass();
+        quint32 activityTimer() { return lastActivity; }
 
-private:
-	QString				charName;
-	QString				statusMessage;
-	characterStatus		charStatus;
-	characterGender		charGender;
-	quint32				lastActivity;
-	bool				chatOp;
-	bool				isFriend;
+        QString activityString();
 
-	//todo: The following data should really go in 'FCharacterProfile', but placed here to expediate the transfer of flist_messenger::processCommand()'s functionality into 'FSession'. 'FCharacterProfile' is expected to use the JSON HTTP API to retrieve data and will be less session dependant.
-	QStringList customkinkdatakeys; //<Custom kink keys in the order they were reported by the server
-	QHash<QString, QString> customkinkdata; //Custom kink data.
-	QStringList profiledatakeys; //<Profile keys in the order they were reported by the server
-	QHash<QString, QString> profiledata; //Profile data.
+        bool isChatOp() { return chatOp; }
+
+        void setIsFriend(bool b) { isFriend = b; }
+
+        bool getFriend() { return isFriend; }
+
+        void setIsChatOp(const bool op);
+        QColor& genderColor();
+        QString genderBBColor();
+        QString PMTitle();
+
+        QString getUrl() { return "https://www.f-list.net/c/" + charName + "/"; } // todo: HTTP request character encoding. //todo: Get server address from FServer?
+
+        void clearCustomKinkData() {
+            customkinkdatakeys.clear();
+            customkinkdata.clear();
+        }
+
+        void addCustomKinkData(QString key, QString value) {
+            customkinkdatakeys.removeAll(key);
+            customkinkdatakeys.append(key);
+            customkinkdata[key] = value;
+        }
+
+        QStringList& getCustomKinkDataKeys() { return customkinkdatakeys; }
+
+        QHash<QString, QString>& getCustomKinkData() { return customkinkdata; }
+
+        void clearProfileData() {
+            profiledatakeys.clear();
+            profiledata.clear();
+        }
+
+        void addProfileData(QString key, QString value) {
+            profiledatakeys.removeAll(key);
+            profiledatakeys.append(key);
+            profiledata[key] = value;
+        }
+
+        QStringList& getProfileDataKeys() { return profiledatakeys; }
+
+        QHash<QString, QString>& getProfileData() { return profiledata; }
+
+        static void initClass();
+
+    private:
+        QString charName;
+        QString statusMessage;
+        characterStatus charStatus;
+        characterGender charGender;
+        quint32 lastActivity;
+        bool chatOp;
+        bool isFriend;
+
+        // todo: The following data should really go in 'FCharacterProfile', but placed here to expediate the transfer of flist_messenger::processCommand()'s functionality into
+        // 'FSession'. 'FCharacterProfile' is expected to use the JSON HTTP API to retrieve data and will be less session dependant.
+        QStringList customkinkdatakeys;         //<Custom kink keys in the order they were reported by the server
+        QHash<QString, QString> customkinkdata; // Custom kink data.
+        QStringList profiledatakeys;            //<Profile keys in the order they were reported by the server
+        QHash<QString, QString> profiledata;    // Profile data.
 };
 
-#endif //flist_character_H
+#endif                                          // flist_character_H
