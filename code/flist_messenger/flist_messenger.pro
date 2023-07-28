@@ -105,6 +105,7 @@ FORMS += \
     flist_loginwindow.ui \
     ui/channellistdialog.ui \
     ui/aboutdialog.ui \
+    ui/chatexport.ui \
     ui/makeroomdialog.ui \
     ui/statusdialog.ui \
     ui/friendsdialog.ui \
