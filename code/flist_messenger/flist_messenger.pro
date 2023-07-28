@@ -57,6 +57,7 @@ HEADERS += \
     ui/characterinfodialog.h \
     ui/channellistdialog.h \
     ui/aboutdialog.h \
+    ui/exportdialog.h \
     ui/makeroomdialog.h \
     ui/statusdialog.h \
     ui/friendsdialog.h \
@@ -94,6 +95,7 @@ SOURCES += \
     ui/characterinfodialog.cpp \
     ui/channellistdialog.cpp \
     ui/aboutdialog.cpp \
+    ui/exportdialog.cpp \
     ui/makeroomdialog.cpp \
     ui/statusdialog.cpp \
     ui/friendsdialog.cpp \
@@ -105,7 +107,7 @@ FORMS += \
     flist_loginwindow.ui \
     ui/channellistdialog.ui \
     ui/aboutdialog.ui \
-    ui/chatexport.ui \
+    ui/exportdialog.ui \
     ui/makeroomdialog.ui \
     ui/statusdialog.ui \
     ui/friendsdialog.ui \

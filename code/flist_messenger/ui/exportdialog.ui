@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>dialogExport</class>
- <widget class="QDialog" name="dialogExport">
+ <class>FAExportDialog</class>
+ <widget class="QDialog" name="FAExportDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -132,7 +132,7 @@
     <string>Select Date:</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox">
+  <widget class="QComboBox" name="comboBoxLogDate">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -168,7 +168,7 @@
     <string>Place logs in a zip file</string>
    </property>
   </widget>
-  <widget class="Line" name="line">
+  <widget class="Line" name="lineDivider">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -181,7 +181,7 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="lineEditDestination">
    <property name="geometry">
     <rect>
      <x>20</x>
