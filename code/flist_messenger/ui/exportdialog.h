@@ -15,8 +15,8 @@ class FAExportDialog : public QDialog {
         ~FAExportDialog();
 
         void setCharacters(QStringList characters);
-        void setChannels(QStringList channels);
-        void setLogDates(QStringList logDates);
+        void setChannels(QHash<QString, QStringList> channels);
+        void setLogDates(QHash<QString, QHash<QString, QStringList>> logDates);
 
     signals:
         void requestChannelsForCharacter(QString character);
@@ -26,8 +26,8 @@ class FAExportDialog : public QDialog {
     private:
         Ui::FAExportDialog *ui;
         QStringList m_characters;
-        QStringList m_channels;
-        QStringList m_logDates;
+        QHash<QString, QStringList> m_channels;                 // character -> channel list
+        QHash<QString, QHash<QString, QStringList>> m_logDates; // character -> channel list -> log dates
 
         void updateCharacterComboBox();
         void updateChannelComboBox();
