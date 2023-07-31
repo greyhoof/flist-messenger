@@ -84,6 +84,7 @@
 #include "flist_loginwindow.h"
 #include "flist_logincontroller.h"
 #include "usereturn.h"
+#include "ui/licensedialog.h"
 #include "ui/characterinfodialog.h"
 #include "ui/channellistdialog.h"
 #include "ui/helpdialog.h"
@@ -171,8 +172,12 @@ class flist_messenger : public QMainWindow, iUserInterface {
         QAction *actionQuit;
         QAction *actionHelp;
         QAction *actionAbout;
+        QAction *actionLicenses;
         QAction *actionColours;
         QAction *actionCommands;
+        //=================================
+        //=================================
+        FLicenseDialog *licenseDialog;
         //=================================
         QWidget *horizontalLayoutWidget;
         QWidget *verticalLayoutWidget;
@@ -239,6 +244,7 @@ class flist_messenger : public QMainWindow, iUserInterface {
         void receivedSocketSslError(QString sslerrors);
         void quitApp();
         void aboutApp();
+        void licenses();
         void channelButtonMenuRequested();
         void channelButtonClicked(); // Called when channel button is clicked. This should switch panels, and do other necessary things.
         void updateChannelMode();

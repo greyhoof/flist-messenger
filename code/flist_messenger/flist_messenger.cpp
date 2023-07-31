@@ -64,6 +64,7 @@ flist_messenger::flist_messenger(bool d) {
     recentChannelMenu = 0;
     reportDialog = 0;
     helpDialog = 0;
+    licenseDialog = nullptr;
     aboutDialog = 0;
     timeoutDialog = 0;
     settingsDialog = 0;
@@ -611,6 +612,12 @@ void flist_messenger::setupRealUI() {
     actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
     actionAbout->setText(QString::fromUtf8("About"));
     actionAbout->setIcon(QIcon(":/images/icon.ico"));
+
+    actionLicenses = new QAction(this);
+    actionLicenses->setObjectName(QString::fromUtf8("actionLicenses"));
+    actionLicenses->setText(QString::fromUtf8("Licenses"));
+    actionLicenses->setIcon(QIcon(":/images/newspaper.png"));
+
     verticalLayoutWidget = new QWidget(this);
     verticalLayoutWidget->setObjectName(QString::fromUtf8("overview"));
     verticalLayoutWidget->setGeometry(QRect(5, -1, 841, 511));
@@ -773,6 +780,8 @@ void flist_messenger::setupRealUI() {
     menubar->addAction(menuHelp->menuAction());
     menuHelp->addAction(actionHelp);
     menuHelp->addSeparator();
+    menuHelp->addAction(actionLicenses);
+    menuHelp->addSeparator();
     menuHelp->addAction(actionAbout);
     menuFile->addAction(actionDisconnect);
     menuFile->addSeparator();
@@ -780,6 +789,7 @@ void flist_messenger::setupRealUI() {
     connect(actionHelp, SIGNAL(triggered()), this, SLOT(helpDialogRequested()));
     connect(actionAbout, SIGNAL(triggered()), this, SLOT(aboutApp()));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(quitApp()));
+    connect(actionLicenses, &QAction::triggered, this, &flist_messenger::licenses);
     centerOnScreen(this);
     setupConsole();
 }
@@ -1178,6 +1188,13 @@ void flist_messenger::aboutApp() {
         connect(aboutDialog, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
     }
     aboutDialog->show();
+}
+
+void flist_messenger::licenses() {
+    if (licenseDialog == nullptr) {
+        licenseDialog = new FLicenseDialog(this);
+    }
+    licenseDialog->show();
 }
 
 void flist_messenger::quitApp() {

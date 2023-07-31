@@ -6,41 +6,40 @@
 #include "flist_account.h"
 
 namespace Ui {
-class FLoginWindow;
+    class FLoginWindow;
 }
 
-class FLoginWindow : public QWidget
-{
-	Q_OBJECT
+class FLoginWindow : public QWidget {
+        Q_OBJECT
 
-public:
-	explicit FLoginWindow(QWidget *parent = 0);
-	~FLoginWindow();
+    public:
+        explicit FLoginWindow(QWidget *parent = 0);
+        ~FLoginWindow();
 
-	void setLoginCredentials(QString name, QString password);
-	void clearCredentials();
-	void clearPassword();
+        void setLoginCredentials(QString name, QString password);
+        void clearCredentials();
+        void clearPassword();
 
-signals:
-	void loginRequested(QString username, QString password);
-	void saveCredentialsRequested(QString username, QString password);
-	void clearCredentialsRequested();
-	void connectRequested(QString characterName);
+    signals:
+        void loginRequested(QString username, QString password, bool store = false);
+        void saveCredentialsRequested(QString username, QString password);
+        void clearCredentialsRequested();
+        void connectRequested(QString characterName);
 
-public slots:
-	void showError(QString message);
-	void showLoginPage();
-	void showConnectPage(FAccount *account);
+    public slots:
+        void showError(QString message);
+        void showLoginPage();
+        void showConnectPage(FAccount *account);
 
-private:
-	Ui::FLoginWindow *ui;
-	int lastPage;
+    private:
+        Ui::FLoginWindow *ui;
+        int lastPage;
 
-private slots:
-	void dismissMessage();
-	void loginClicked();
-	void connectClicked();
-	void enterPressed();
+    private slots:
+        void dismissMessage();
+        void loginClicked();
+        void connectClicked();
+        void enterPressed();
 };
 
 #endif // FLIST_LOGINWINDOW_H

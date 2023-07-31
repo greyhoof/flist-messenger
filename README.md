@@ -17,6 +17,7 @@ If you have questions about *the original version of this project*, please refer
 * Handling of stylesheets was improved, the app will now provide default files if none exist in the app folder
 * libjson was removed in favor of Qt's built-in JSON support
 * WebSocket connections are now properly handled by QWebSocket
+* Login credentials can now be stored safely
 * Icons and EIcons are now fully supported (including animation of the latter)
 * Spoiler tags are now supported (select text to display, as :hover is not supported)
 
