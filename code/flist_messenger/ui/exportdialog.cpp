@@ -4,6 +4,8 @@
 FAExportDialog::FAExportDialog(QWidget *parent) : QDialog(parent), ui(new Ui::FAExportDialog) {
     ui->setupUi(this);
 
+    ui->buttonClose->setIcon(QIcon(":/images/cross.png"));
+
     connect(ui->comboBoxCharacter, &QComboBox::currentIndexChanged, this, [this]() { updateChannelComboBox(); });
     connect(ui->comboBoxChannel, &QComboBox::currentIndexChanged, this, [this]() { updateLogDateComboBox(); });
 
@@ -55,6 +57,7 @@ void FAExportDialog::setLogDates(QHash<QString, QHash<QString, QStringList>> log
 }
 
 void FAExportDialog::updateCharacterComboBox() {
+    ui->comboBoxCharacter->clear();
     ui->comboBoxCharacter->addItems(m_characters);
     ui->comboBoxCharacter->setCurrentIndex(0);
 
@@ -94,4 +97,8 @@ void FAExportDialog::updateLogDateComboBox() {
 
     ui->comboBoxLogDate->addItems(m_logDates.value(ui->comboBoxCharacter->currentText()).value(ui->comboBoxChannel->currentText()));
     ui->comboBoxLogDate->setCurrentIndex(0);
+}
+
+void FAExportDialog::on_buttonClose_clicked() {
+    close();
 }

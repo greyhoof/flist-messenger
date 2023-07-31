@@ -65,6 +65,7 @@ flist_messenger::flist_messenger(bool d) {
     reportDialog = 0;
     helpDialog = 0;
     aboutDialog = 0;
+    exportDialog = nullptr;
     timeoutDialog = 0;
     settingsDialog = 0;
     trayIcon = 0;
@@ -611,6 +612,13 @@ void flist_messenger::setupRealUI() {
     actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
     actionAbout->setText(QString::fromUtf8("About"));
     actionAbout->setIcon(QIcon(":/images/icon.ico"));
+
+    // TOOL ACTIONS
+    actionLogExport = new QAction(this);
+    actionLogExport->setObjectName("actionLogExport");
+    actionLogExport->setText("Log Exporter");
+    actionLogExport->setIcon(QIcon(":/images/book-open-list.png"));
+
     verticalLayoutWidget = new QWidget(this);
     verticalLayoutWidget->setObjectName(QString::fromUtf8("overview"));
     verticalLayoutWidget->setGeometry(QRect(5, -1, 841, 511));
@@ -768,8 +776,12 @@ void flist_messenger::setupRealUI() {
     menuFile = new QMenu(menubar);
     menuFile->setObjectName("menuFile");
     menuFile->setTitle("&File");
+    menuTools = new QMenu(menubar);
+    menuTools->setObjectName("menuTools");
+    menuTools->setTitle("Tools");
     setMenuBar(menubar);
     menubar->addAction(menuFile->menuAction());
+    menubar->addAction(menuTools->menuAction());
     menubar->addAction(menuHelp->menuAction());
     menuHelp->addAction(actionHelp);
     menuHelp->addSeparator();
@@ -777,9 +789,11 @@ void flist_messenger::setupRealUI() {
     menuFile->addAction(actionDisconnect);
     menuFile->addSeparator();
     menuFile->addAction(actionQuit);
+    menuTools->addAction(actionLogExport);
     connect(actionHelp, SIGNAL(triggered()), this, SLOT(helpDialogRequested()));
     connect(actionAbout, SIGNAL(triggered()), this, SLOT(aboutApp()));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(quitApp()));
+    connect(actionLogExport, &QAction::triggered, this, &flist_messenger::logExport);
     centerOnScreen(this);
     setupConsole();
 }
@@ -1178,6 +1192,14 @@ void flist_messenger::aboutApp() {
         connect(aboutDialog, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
     }
     aboutDialog->show();
+}
+
+void flist_messenger::logExport() {
+    if (exportDialog == nullptr) {
+        exportDialog = new FAExportDialog(this);
+        // connect to export signal
+    }
+    exportDialog->show();
 }
 
 void flist_messenger::quitApp() {

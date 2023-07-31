@@ -88,6 +88,7 @@
 #include "ui/channellistdialog.h"
 #include "ui/helpdialog.h"
 #include "ui/aboutdialog.h"
+#include "ui/exportdialog.h"
 #include "ui/makeroomdialog.h"
 #include "ui/statusdialog.h"
 #include "ui/friendsdialog.h"
@@ -174,6 +175,8 @@ class flist_messenger : public QMainWindow, iUserInterface {
         QAction *actionColours;
         QAction *actionCommands;
         //=================================
+        QAction *actionLogExport;
+        //=================================
         QWidget *horizontalLayoutWidget;
         QWidget *verticalLayoutWidget;
         QHBoxLayout *horizontalLayout;
@@ -202,6 +205,7 @@ class flist_messenger : public QMainWindow, iUserInterface {
         QListWidget *listWidget;
         QMenu *menuHelp;
         QMenu *menuFile;
+        QMenu *menuTools;
         UseReturn *returnFilter;
         FAvatar avatarFetcher;
         QSpacerItem *activePanelsSpacer;
@@ -239,6 +243,7 @@ class flist_messenger : public QMainWindow, iUserInterface {
         void receivedSocketSslError(QString sslerrors);
         void quitApp();
         void aboutApp();
+        void logExport();
         void channelButtonMenuRequested();
         void channelButtonClicked(); // Called when channel button is clicked. This should switch panels, and do other necessary things.
         void updateChannelMode();
@@ -375,6 +380,8 @@ class flist_messenger : public QMainWindow, iUserInterface {
 
         FHelpDialog *helpDialog;
         FAboutDialog *aboutDialog;
+
+        FAExportDialog *exportDialog;
 
         QDialog *timeoutDialog; // to stands for timeout
         QLineEdit *to_leWho;

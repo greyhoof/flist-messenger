@@ -23,6 +23,9 @@ class FAExportDialog : public QDialog {
         void requestLogDatesForCharacterAndChannel(QString character, QString channel);
         void exportLogsToDestination(QString destination, QString character, bool asZipFile, QString channel = "", QString date = "");
 
+    private slots:
+        void on_buttonClose_clicked();
+
     private:
         Ui::FAExportDialog *ui;
         QStringList m_characters;

@@ -84,6 +84,12 @@ QMainWindow {
 	color:#ffffff;
 }
 
+/* Let's make checkboxes readable on the dark background */
+QCheckBox {
+        color:#ffffff;
+        font-size:15px;
+}
+
 QLabel {
 	color:#ffffff;
 	font-size:15px;
