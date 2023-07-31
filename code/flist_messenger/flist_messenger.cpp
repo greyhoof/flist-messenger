@@ -64,6 +64,7 @@ flist_messenger::flist_messenger(bool d) {
     recentChannelMenu = 0;
     reportDialog = 0;
     helpDialog = 0;
+    licenseDialog = nullptr;
     aboutDialog = 0;
     exportDialog = nullptr;
     timeoutDialog = 0;
@@ -619,6 +620,12 @@ void flist_messenger::setupRealUI() {
     actionLogExport->setText("Log Exporter");
     actionLogExport->setIcon(QIcon(":/images/book-open-list.png"));
 
+
+    actionLicenses = new QAction(this);
+    actionLicenses->setObjectName(QString::fromUtf8("actionLicenses"));
+    actionLicenses->setText(QString::fromUtf8("Licenses"));
+    actionLicenses->setIcon(QIcon(":/images/newspaper.png"));
+
     verticalLayoutWidget = new QWidget(this);
     verticalLayoutWidget->setObjectName(QString::fromUtf8("overview"));
     verticalLayoutWidget->setGeometry(QRect(5, -1, 841, 511));
@@ -785,6 +792,8 @@ void flist_messenger::setupRealUI() {
     menubar->addAction(menuHelp->menuAction());
     menuHelp->addAction(actionHelp);
     menuHelp->addSeparator();
+    menuHelp->addAction(actionLicenses);
+    menuHelp->addSeparator();
     menuHelp->addAction(actionAbout);
     menuFile->addAction(actionDisconnect);
     menuFile->addSeparator();
@@ -794,6 +803,7 @@ void flist_messenger::setupRealUI() {
     connect(actionAbout, SIGNAL(triggered()), this, SLOT(aboutApp()));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(quitApp()));
     connect(actionLogExport, &QAction::triggered, this, &flist_messenger::logExport);
+    connect(actionLicenses, &QAction::triggered, this, &flist_messenger::licenses);
     centerOnScreen(this);
     setupConsole();
 }
@@ -1200,6 +1210,13 @@ void flist_messenger::logExport() {
         // connect to export signal
     }
     exportDialog->show();
+}
+
+void flist_messenger::licenses() {
+    if (licenseDialog == nullptr) {
+        licenseDialog = new FLicenseDialog(this);
+    }
+    licenseDialog->show();
 }
 
 void flist_messenger::quitApp() {

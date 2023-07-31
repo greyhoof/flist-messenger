@@ -22,6 +22,10 @@ TARGET = flist-messenger
 DEPENDPATH += . \
 INCLUDEPATH += . \
 
+# Include static QtKeychain library
+# TODO: Migrate to CMake and link it dynamically
+include(../libs/qtkeychain/qtkeychain.pri)
+
 # Input
 HEADERS += \
     api/flist_socket.h \
@@ -32,6 +36,7 @@ HEADERS += \
            flist_common.h \
            flist_global.h \
     flist_jsonhelper.h \
+    flist_keychainmanager.h \
            flist_messenger.h \
            flist_parser.h \
            flist_session.h \
@@ -53,6 +58,7 @@ HEADERS += \
     flist_api.h \
     api/endpoint_v1.h \
 	api/data.h \
+    ui/licensedialog.h \
     ui/helpdialog.h \
     ui/characterinfodialog.h \
     ui/channellistdialog.h \
@@ -72,6 +78,7 @@ SOURCES += \
            flist_character.cpp \
            flist_global.cpp \
     flist_jsonhelper.cpp \
+    flist_keychainmanager.cpp \
            flist_messenger.cpp \
            flist_parser.cpp \
            flist_session.cpp \
@@ -91,6 +98,7 @@ SOURCES += \
     flist_settings.cpp \
     flist_enums.cpp \
     flist_attentionsettingswidget.cpp \
+    ui/licensedialog.cpp \
     ui/helpdialog.cpp \
     ui/characterinfodialog.cpp \
     ui/channellistdialog.cpp \
@@ -105,6 +113,7 @@ SOURCES += \
 RESOURCES += resources.qrc
 FORMS += \
     flist_loginwindow.ui \
+    ui/licensedialog.ui \
     ui/channellistdialog.ui \
     ui/aboutdialog.ui \
     ui/exportdialog.ui \
