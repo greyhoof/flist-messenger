@@ -24,6 +24,10 @@ TARGET = flist-messenger
 DEPENDPATH += . \
 INCLUDEPATH += . \
 
+# Include static QtKeychain library
+# TODO: Migrate to CMake and link it dynamically
+include(../libs/qtkeychain/qtkeychain.pri)
+
 # Input
 HEADERS += \
     api/flist_socket.h \
@@ -34,6 +38,7 @@ HEADERS += \
            flist_common.h \
            flist_global.h \
     flist_jsonhelper.h \
+    flist_keychainmanager.h \
            flist_messenger.h \
            flist_parser.h \
            flist_session.h \
@@ -73,6 +78,7 @@ SOURCES += \
            flist_character.cpp \
            flist_global.cpp \
     flist_jsonhelper.cpp \
+    flist_keychainmanager.cpp \
            flist_messenger.cpp \
            flist_parser.cpp \
            flist_session.cpp \
