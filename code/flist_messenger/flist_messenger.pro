@@ -60,6 +60,7 @@ HEADERS += \
     flist_api.h \
     api/endpoint_v1.h \
 	api/data.h \
+    ui/licensedialog.h \
     ui/helpdialog.h \
     ui/characterinfodialog.h \
     ui/channellistdialog.h \
@@ -98,6 +99,7 @@ SOURCES += \
     flist_settings.cpp \
     flist_enums.cpp \
     flist_attentionsettingswidget.cpp \
+    ui/licensedialog.cpp \
     ui/helpdialog.cpp \
     ui/characterinfodialog.cpp \
     ui/channellistdialog.cpp \
@@ -111,6 +113,7 @@ SOURCES += \
 RESOURCES += resources.qrc
 FORMS += \
     flist_loginwindow.ui \
+    ui/licensedialog.ui \
     ui/channellistdialog.ui \
     ui/aboutdialog.ui \
     ui/makeroomdialog.ui \
