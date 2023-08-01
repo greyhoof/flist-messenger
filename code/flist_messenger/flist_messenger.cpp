@@ -1207,8 +1207,9 @@ void flist_messenger::aboutApp() {
 
 void flist_messenger::logExport() {
     if (exportDialog == nullptr) {
-        exportDialog = new FAExportDialog(this);
+        exportDialog = new FAExportDialog(debugging, this);
         // connect to export signal
+        connect(exportDialog, &FAExportDialog::exportLogsToDestination, exportController, &FExporter::onExportLogsToDestination);
     }
 
     // update log meta data for dialog

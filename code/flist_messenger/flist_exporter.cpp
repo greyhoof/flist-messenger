@@ -36,9 +36,9 @@ QHash<QString, QHash<QString, QStringList>> FExporter::getLogMetaData() {
     if (m_debugging) {
         foreach (const QString &key, logMetaData.keys()) {
             foreach (const QString &channel, logMetaData.value(key).keys()) {
-                qDebug().noquote() << "Character: " << key;
-                qDebug().noquote() << "Channel: " << channel;
-                qDebug().noquote() << "Dates: " << logMetaData.value(key).value(channel);
+                qDebug().noquote() << "FExporter->getLogMetaData() Character: " << key;
+                qDebug().noquote() << "FExporter->getLogMetaData() Channel: " << channel;
+                qDebug().noquote() << "FExporter->getLogMetaData() Dates: " << logMetaData.value(key).value(channel);
             }
         }
     }
@@ -47,12 +47,13 @@ QHash<QString, QHash<QString, QStringList>> FExporter::getLogMetaData() {
 }
 
 void FExporter::onExportLogsToDestination(QString destination, QString character, bool asZipFile, QString channel, QString date) {
-    // if (m_debugging) {
-    //     qDebug().noquote() << "Exporting logs to: " << destination;
-    //     qDebug().noquote() << "Character: " << character;
-    //     qDebug().noquote() << "Channel: " << channel;
-    //     qDebug().noquote() << "Date: " << date;
-    // }
+    if (m_debugging) {
+        qDebug().noquote() << "Exporting logs to: " << destination;
+        qDebug().noquote() << "Character: " << character;
+        qDebug().noquote() << "Channel: " << channel;
+        qDebug().noquote() << "Date: " << date;
+        qDebug().noquote() << "As Zip file: " << asZipFile;
+    }
 
     // // get all log files
     // QStringList logFiles = getLogFilenames();
