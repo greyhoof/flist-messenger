@@ -80,6 +80,8 @@ flist_messenger::flist_messenger(bool d) {
     cl_dialog = 0;
     selfStatus = "online";
 
+    exportController = new FExporter(debugging, this);
+
     FCharacter::initClass();
     FChannelPanel::initClass();
 }
@@ -619,7 +621,6 @@ void flist_messenger::setupRealUI() {
     actionLogExport->setObjectName("actionLogExport");
     actionLogExport->setText("Log Exporter");
     actionLogExport->setIcon(QIcon(":/images/book-open-list.png"));
-
 
     actionLicenses = new QAction(this);
     actionLicenses->setObjectName(QString::fromUtf8("actionLicenses"));
@@ -1209,6 +1210,9 @@ void flist_messenger::logExport() {
         exportDialog = new FAExportDialog(this);
         // connect to export signal
     }
+
+    // update log meta data for dialog
+    exportDialog->setLogMetaData(exportController->getLogMetaData());
     exportDialog->show();
 }
 

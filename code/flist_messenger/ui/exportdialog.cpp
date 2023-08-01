@@ -41,24 +41,14 @@ FAExportDialog::~FAExportDialog() {
     delete ui;
 }
 
-void FAExportDialog::setCharacters(QStringList characters) {
-    m_characters = characters;
+void FAExportDialog::setLogMetaData(QHash<QString, QHash<QString, QStringList>> logMetaData) {
+    m_logMetaData = logMetaData;
     updateCharacterComboBox();
-}
-
-void FAExportDialog::setChannels(QHash<QString, QStringList> channels) {
-    m_channels = channels;
-    updateChannelComboBox();
-}
-
-void FAExportDialog::setLogDates(QHash<QString, QHash<QString, QStringList>> logDates) {
-    m_logDates = logDates;
-    updateLogDateComboBox();
 }
 
 void FAExportDialog::updateCharacterComboBox() {
     ui->comboBoxCharacter->clear();
-    ui->comboBoxCharacter->addItems(m_characters);
+    ui->comboBoxCharacter->addItems(m_logMetaData.keys());
     ui->comboBoxCharacter->setCurrentIndex(0);
 
     updateChannelComboBox();
@@ -66,19 +56,14 @@ void FAExportDialog::updateCharacterComboBox() {
 
 void FAExportDialog::updateChannelComboBox() {
     ui->comboBoxChannel->clear();
-    if (m_characters.length() < 1 || m_channels.count() < 1) {
+    if (m_logMetaData.count() < 1) {
         updateLogDateComboBox();
         return;
     }
 
-    if (!m_channels.contains(ui->comboBoxCharacter->currentText())) {
-        updateLogDateComboBox();
-        return;
-    }
+    QHash<QString, QStringList> channelLogDatesForCharacter = m_logMetaData.value(ui->comboBoxCharacter->currentText());
 
-    QStringList channelsForCharacter = m_channels.value(ui->comboBoxCharacter->currentText());
-
-    ui->comboBoxChannel->addItems(channelsForCharacter);
+    ui->comboBoxChannel->addItems(channelLogDatesForCharacter.keys());
     ui->comboBoxChannel->setCurrentIndex(0);
 
     updateLogDateComboBox();
@@ -86,16 +71,12 @@ void FAExportDialog::updateChannelComboBox() {
 
 void FAExportDialog::updateLogDateComboBox() {
     ui->comboBoxLogDate->clear();
-    if (m_channels.count() < 1) {
+    if (m_logMetaData.count() < 1) {
+        updateLogDateComboBox();
         return;
     }
 
-    if (!m_channels.contains(ui->comboBoxCharacter->currentText()) || !m_logDates.contains(ui->comboBoxCharacter->currentText())
-        || !m_logDates.value(ui->comboBoxCharacter->currentText()).contains(ui->comboBoxChannel->currentText())) {
-        return;
-    }
-
-    ui->comboBoxLogDate->addItems(m_logDates.value(ui->comboBoxCharacter->currentText()).value(ui->comboBoxChannel->currentText()));
+    ui->comboBoxLogDate->addItems(m_logMetaData.value(ui->comboBoxCharacter->currentText()).value(ui->comboBoxChannel->currentText()));
     ui->comboBoxLogDate->setCurrentIndex(0);
 }
 

@@ -34,6 +34,7 @@ HEADERS += \
            flist_channeltab.h \
            flist_character.h \
            flist_common.h \
+    flist_exporter.h \
            flist_global.h \
     flist_jsonhelper.h \
     flist_keychainmanager.h \
@@ -76,6 +77,7 @@ SOURCES += \
            flist_avatar.cpp \
            flist_channeltab.cpp \
            flist_character.cpp \
+    flist_exporter.cpp \
            flist_global.cpp \
     flist_jsonhelper.cpp \
     flist_keychainmanager.cpp \

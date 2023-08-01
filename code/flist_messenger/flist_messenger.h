@@ -75,6 +75,7 @@
 
 #include "flist_character.h"
 #include "flist_channelpanel.h"
+#include "flist_exporter.h"
 #include "flist_sound.h"
 #include "flist_avatar.h"
 #include "flist_parser.h"
@@ -178,8 +179,6 @@ class flist_messenger : public QMainWindow, iUserInterface {
         QAction *actionCommands;
         //=================================
         QAction *actionLogExport;
-        //=================================
-        //=================================
         FLicenseDialog *licenseDialog;
         //=================================
         QWidget *horizontalLayoutWidget;
@@ -336,6 +335,7 @@ class flist_messenger : public QMainWindow, iUserInterface {
 
         FLoginWindow *loginWidget;
         FLoginController *loginController;
+        FExporter *exportController;
         FChannelPanel *console; // We could just put this into the channel list, but the console needs to be accessed quite often. So here we go...
         FChannelPanel *currentPanel;
         FSound soundPlayer;

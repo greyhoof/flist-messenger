@@ -14,13 +14,9 @@ class FAExportDialog : public QDialog {
         explicit FAExportDialog(QWidget *parent = nullptr);
         ~FAExportDialog();
 
-        void setCharacters(QStringList characters);
-        void setChannels(QHash<QString, QStringList> channels);
-        void setLogDates(QHash<QString, QHash<QString, QStringList>> logDates);
+        void setLogMetaData(QHash<QString, QHash<QString, QStringList>> logMetaData);
 
     signals:
-        void requestChannelsForCharacter(QString character);
-        void requestLogDatesForCharacterAndChannel(QString character, QString channel);
         void exportLogsToDestination(QString destination, QString character, bool asZipFile, QString channel = "", QString date = "");
 
     private slots:
@@ -28,9 +24,7 @@ class FAExportDialog : public QDialog {
 
     private:
         Ui::FAExportDialog *ui;
-        QStringList m_characters;
-        QHash<QString, QStringList> m_channels;                 // character -> channel list
-        QHash<QString, QHash<QString, QStringList>> m_logDates; // character -> channel list -> log dates
+        QHash<QString, QHash<QString, QStringList>> m_logMetaData; // character -> channel list -> log dates
 
         void updateCharacterComboBox();
         void updateChannelComboBox();
