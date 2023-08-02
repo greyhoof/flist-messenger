@@ -433,6 +433,7 @@ COMMAND(CSO) {
 
 COMMAND(ICH) {
     (void)rawpacket;
+
     // Initial channel/room data. Sent when this session joins a channel.
     // ICH { "users": [object], "channnel": "Channel Name", "title": "Channel Title", "mode": enum }
     // Where object is: {"identity":"Character Name"}
@@ -450,29 +451,40 @@ COMMAND(ICH) {
     QList<QVariant> childnode = nodes.value("users").toList();
     // debugMessage(QString("ICH: users: #%1").arg(childnode.size()));
     QString channeltitle;
-    if (channelname.startsWith("ADH-")) {
-        try {
-            // todo: Wiki says to expect "title" in the ICH command, but none is received
-            channeltitle = nodes.value("title").toString();
-        } catch (std::out_of_range const &) {
+    if (!channellist.contains(nodes.value("channel").toString())) {
+        if (channelname.startsWith("ADH-")) {
+            try {
+                // todo: Wiki says to expect "title" in the ICH command, but none is received
+                channeltitle = nodes.value("title").toString();
+            } catch (std::out_of_range const &) {
+                channeltitle = channelname;
+            }
+        } else {
             channeltitle = channelname;
         }
+
+        channel = addChannel(channelname, channeltitle);
+        account->ui->addChannel(this, channelname, channeltitle);
+        if (channelmode == "both") {
+            channel->mode = CHANNEL_MODE_BOTH;
+        } else if (channelmode == "ads") {
+            channel->mode = CHANNEL_MODE_ADS;
+        } else if (channelmode == "chat") {
+            channel->mode = CHANNEL_MODE_CHAT;
+        } else {
+            channel->mode = CHANNEL_MODE_UNKNOWN;
+            debugMessage("[SERVER BUG]: Received unknown channel mode '" + channelmode + "' for channel '" + channelname + "'. <<" + QString::fromStdString(rawpacket));
+        }
+        account->ui->setChannelMode(this, channelname, channel->mode);
     } else {
-        channeltitle = channelname;
+        qDebug().noquote() << "ICH << Not trying to add channel to list because the list already contains it.";
+        channel = getChannel(channelname);
+        if (channel == 0) {
+            qDebug().noquote() << "ICH << Could not get channel object with name '" << channelname
+                               << "' from channel list, even though the list contains it. Skipping user list update.";
+            return;
+        }
     }
-    channel = addChannel(channelname, channeltitle);
-    account->ui->addChannel(this, channelname, channeltitle);
-    if (channelmode == "both") {
-        channel->mode = CHANNEL_MODE_BOTH;
-    } else if (channelmode == "ads") {
-        channel->mode = CHANNEL_MODE_ADS;
-    } else if (channelmode == "chat") {
-        channel->mode = CHANNEL_MODE_CHAT;
-    } else {
-        channel->mode = CHANNEL_MODE_UNKNOWN;
-        debugMessage("[SERVER BUG]: Received unknown channel mode '" + channelmode + "' for channel '" + channelname + "'. <<" + QString::fromStdString(rawpacket));
-    }
-    account->ui->setChannelMode(this, channelname, channel->mode);
 
     int size = childnode.size();
     debugMessage("Initial channel data for '" + channelname + "', charcter count: " + QString::number(size));
@@ -493,6 +505,7 @@ COMMAND(JCH) {
     (void)rawpacket;
     // Join channel notification. Sent when a character joins a channel.
     // JCH {"character": {"identity": "Character Name"}, "channel": "Channel Name", "title": "Channel Title"}
+
     FChannel *channel;
     QString channelname = nodes.value("channel").toString();
     QString channeltitle;

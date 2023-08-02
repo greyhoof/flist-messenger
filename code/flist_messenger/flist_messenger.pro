@@ -38,6 +38,7 @@ HEADERS += \
            flist_global.h \
     flist_jsonhelper.h \
     flist_keychainmanager.h \
+    flist_logmetadata.h \
            flist_messenger.h \
            flist_parser.h \
            flist_session.h \
@@ -81,6 +82,7 @@ SOURCES += \
            flist_global.cpp \
     flist_jsonhelper.cpp \
     flist_keychainmanager.cpp \
+    flist_logmetadata.cpp \
            flist_messenger.cpp \
            flist_parser.cpp \
            flist_session.cpp \

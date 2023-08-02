@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QFileDialog>
+#include "flist_logmetadata.h"
 
 namespace Ui {
     class FAExportDialog;
@@ -15,7 +16,7 @@ class FAExportDialog : public QDialog {
         explicit FAExportDialog(bool debugging = false, QWidget *parent = nullptr);
         ~FAExportDialog();
 
-        void setLogMetaData(QHash<QString, QHash<QString, QStringList>> logMetaData);
+        void setLogMetaData(QList<FLogMetaData *> logMetaData);
 
     signals:
         void exportLogsToDestination(QString destination, QString character, bool asZipFile, QString channel = "", QString date = "");
@@ -30,7 +31,12 @@ class FAExportDialog : public QDialog {
     private:
         bool m_debugging = false;
         Ui::FAExportDialog *ui;
-        QHash<QString, QHash<QString, QStringList>> m_logMetaData; // character -> channel list -> log dates
+        QList<FLogMetaData *> m_logMetaData;
+
+        QStringList getCharacters();
+        QStringList getChannelsForCharacter(QString character);
+        QStringList getDatesForCharacterAndChannel(QString character, QString channel);
+        QString getPathForCharacterChannelAndDate(QString character, QString channel, QString date);
 
         void updateCharacterComboBox();
         void updateChannelComboBox();

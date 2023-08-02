@@ -6,11 +6,13 @@
 #include <QHash>
 #include <QDir>
 
+#include "flist_logmetadata.h"
+
 class FExporter : public QObject {
         Q_OBJECT
     public:
         explicit FExporter(bool debugging = false, QObject *parent = nullptr);
-        QHash<QString, QHash<QString, QStringList>> getLogMetaData();
+        QList<FLogMetaData *> getLogMetaData();
 
     signals:
 

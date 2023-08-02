@@ -21,14 +21,14 @@ FAExportDialog::~FAExportDialog() {
     delete ui;
 }
 
-void FAExportDialog::setLogMetaData(QHash<QString, QHash<QString, QStringList>> logMetaData) {
+void FAExportDialog::setLogMetaData(QList<FLogMetaData *> logMetaData) {
     m_logMetaData = logMetaData;
     updateCharacterComboBox();
 }
 
 void FAExportDialog::updateCharacterComboBox() {
     ui->comboBoxCharacter->clear();
-    ui->comboBoxCharacter->addItems(m_logMetaData.keys());
+    ui->comboBoxCharacter->addItems(getCharacters());
     ui->comboBoxCharacter->setCurrentIndex(0);
 
     updateChannelComboBox();
@@ -40,10 +40,7 @@ void FAExportDialog::updateChannelComboBox() {
         updateLogDateComboBox();
         return;
     }
-
-    QHash<QString, QStringList> channelLogDatesForCharacter = m_logMetaData.value(ui->comboBoxCharacter->currentText());
-
-    ui->comboBoxChannel->addItems(channelLogDatesForCharacter.keys());
+    ui->comboBoxChannel->addItems(getChannelsForCharacter(ui->comboBoxCharacter->currentText()));
     ui->comboBoxChannel->setCurrentIndex(0);
 
     updateLogDateComboBox();
@@ -56,7 +53,7 @@ void FAExportDialog::updateLogDateComboBox() {
         return;
     }
 
-    ui->comboBoxLogDate->addItems(m_logMetaData.value(ui->comboBoxCharacter->currentText()).value(ui->comboBoxChannel->currentText()));
+    ui->comboBoxLogDate->addItems(getDatesForCharacterAndChannel(ui->comboBoxCharacter->currentText(), ui->comboBoxChannel->currentText()));
     ui->comboBoxLogDate->setCurrentIndex(0);
 }
 
@@ -68,6 +65,7 @@ void FAExportDialog::buttonExportTriggered() {
     QString selectedCharacter = "";
     QString selectedChannel = "";
     QString selectedLogDate = "";
+    QString logPath = "";
     QString destination = ui->lineEditDestination->text();
     bool exportAsZip = ui->checkBoxExportZip->isChecked();
 
@@ -88,10 +86,13 @@ void FAExportDialog::buttonExportTriggered() {
         selectedLogDate = ui->comboBoxLogDate->currentText();
     }
 
+    logPath = getPathForCharacterChannelAndDate(selectedCharacter, selectedChannel, selectedLogDate);
+
     if (m_debugging) {
         qDebug() << "Selected Character: " << selectedCharacter;
         qDebug() << "Selected Channel: " << selectedChannel;
         qDebug() << "Selected Log Date: " << selectedLogDate;
+        qDebug() << "Log Path: " << logPath;
         qDebug() << "Destination: " << destination;
         qDebug() << "Export as Zip: " << exportAsZip;
     }
@@ -122,4 +123,51 @@ void FAExportDialog::checkBoxDatesAllChanged(int arg1) {
     } else {
         ui->comboBoxLogDate->setEnabled(true);
     }
+}
+
+QStringList FAExportDialog::getCharacters() {
+    QStringList characters;
+    foreach (FLogMetaData *log, m_logMetaData) {
+        if (!characters.contains(log->getCharacter())) {
+            characters.append(log->getCharacter());
+        }
+    }
+
+    return characters;
+}
+
+QStringList FAExportDialog::getChannelsForCharacter(QString character) {
+    QStringList channels;
+    foreach (FLogMetaData *log, m_logMetaData) {
+        if (log->getCharacter() == character) {
+            channels = log->getChannels();
+            break;
+        }
+    }
+
+    return channels;
+}
+
+QStringList FAExportDialog::getDatesForCharacterAndChannel(QString character, QString channel) {
+    QStringList dates;
+    foreach (FLogMetaData *log, m_logMetaData) {
+        if (log->getCharacter() == character) {
+            dates = log->getDatesForChannel(channel);
+            break;
+        }
+    }
+
+    return dates;
+}
+
+QString FAExportDialog::getPathForCharacterChannelAndDate(QString character, QString channel, QString date) {
+    QString path;
+    foreach (FLogMetaData *log, m_logMetaData) {
+        if (log->getCharacter() == character) {
+            path = log->getPathForChannelAndDate(channel, date);
+            break;
+        }
+    }
+
+    return path;
 }

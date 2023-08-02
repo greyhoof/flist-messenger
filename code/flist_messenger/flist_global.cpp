@@ -61,6 +61,9 @@ void fix_broken_escaped_apos(std::string &data) {
 
 QString escapeFileName(QString infilename) {
     QByteArray inname(infilename.toUtf8());
+
+    qDebug().noquote() << inname;
+
     QByteArray outname;
     for (int i = 0; i < inname.length(); i++) {
         unsigned char c = inname.at(i);

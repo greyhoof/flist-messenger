@@ -5,8 +5,8 @@ FExporter::FExporter(bool debugging, QObject *parent) : QObject{parent} {
     m_debugging = debugging;
 }
 
-QHash<QString, QHash<QString, QStringList>> FExporter::getLogMetaData() {
-    QHash<QString, QHash<QString, QStringList>> logMetaData;
+QList<FLogMetaData *> FExporter::getLogMetaData() {
+    QList<FLogMetaData *> logMetaData;
 
     // we always update the list here because data might have changed between export tool uses
     QStringList fileNames = getLogFilenames();
@@ -20,26 +20,16 @@ QHash<QString, QHash<QString, QStringList>> FExporter::getLogMetaData() {
         QString channelName = getChannelFromFilename(file);
         QString logDate = getDateFromFilename(file);
 
-        QHash<QString, QStringList> characterChannelLogs = logMetaData.value(characterName);
+        FLogMetaData *metaData = new FLogMetaData(characterName, this);
+        metaData->addLogData(channelName, logDate, file);
 
-        // add log date to log date list
-        QStringList logDates = characterChannelLogs.value(channelName);
-        logDates.append(logDate);
-
-        // add log date list to channel log list
-        characterChannelLogs.insert(channelName, logDates);
-
-        // add channel log list to log meta data with character name as key
-        logMetaData.insert(characterName, characterChannelLogs);
+        logMetaData.append(metaData);
     }
 
     if (m_debugging) {
-        foreach (const QString &key, logMetaData.keys()) {
-            foreach (const QString &channel, logMetaData.value(key).keys()) {
-                qDebug().noquote() << "FExporter->getLogMetaData() Character: " << key;
-                qDebug().noquote() << "FExporter->getLogMetaData() Channel: " << channel;
-                qDebug().noquote() << "FExporter->getLogMetaData() Dates: " << logMetaData.value(key).value(channel);
-            }
+        foreach (FLogMetaData *data, logMetaData) {
+            qDebug().noquote() << "FExporter->getLogMetaData() Character: " << data->getCharacter();
+            qDebug().noquote() << "FExporter->getLogMetaData() Channels: " << data->getChannels();
         }
     }
 
